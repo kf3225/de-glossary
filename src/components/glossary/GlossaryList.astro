@@ -23,9 +23,17 @@ const base = import.meta.env.BASE_URL;
 
 function buildUrl(slug: string): string {
   // slug は "glossary/network/tcp" のような形式を想定
+  // index.mdx の場合は slug が "glossary/storage/index" になるので、
+  // 末尾の /index を取り除いてディレクトリを表す slug にする
+  const normalizedSlug = slug.replace(/\/index$/, "");
   // base が "/" で終わることを前提に結合する
   const normalizedBase = base.endsWith("/") ? base : `${base}/`;
-  return `${normalizedBase}${slug}/`;
+  return `${normalizedBase}${normalizedSlug}/`;
+}
+
+// index.mdx（カテゴリの目次ページ）は一覧から除外する
+function isIndexPage(slug: string): boolean {
+  return /\/index$/.test(slug) || slug === "index";
 }
 
 const entries: GlossaryEntry[] = Object.entries(modules)
@@ -48,7 +56,8 @@ const entries: GlossaryEntry[] = Object.entries(modules)
       url: buildUrl(slug),
     };
   })
-  .filter((e) => e.title.length > 0)
+  // 目次ページと title 無しを除外
+  .filter((e) => e.title.length > 0 && !isIndexPage(e.slug))
   .sort((a, b) => a.title.localeCompare(b.title, "ja"));
 ---
 
