@@ -63,7 +63,7 @@
 
 ## 必要な環境
 
-- **Node.js**: >= 20.0.0 （本リポジトリのCIでは20を使用）
+- **Node.js**: >= 22.0.0 （本リポジトリのCIでは22 LTSを使用）
 - **pnpm**: 9.x（`package.json` の `packageManager` で固定）
 - **Git**
 - **GitHub アカウント**（Pages公開・CI/CD実行用）

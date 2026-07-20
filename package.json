@@ -5,7 +5,7 @@
   "private": true,
   "description": "個人用の用語集・クイズ学習サイト（Astro + Starlight + Svelte）",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "packageManager": "pnpm@9.15.0",
   "scripts": {
