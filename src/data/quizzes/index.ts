@@ -2,6 +2,7 @@ import type { QuizQuestion } from "@/types/quiz";
 import { fundamentalsQuestions } from "./fundamentals";
 import { storageQuestions } from "./storage";
 import { processingQuestions } from "./processing";
+import { modelingQuestions } from "./modeling";
 
 // 全問題を集約する
 // 横断クイズや進捗画面はこれを参照する
@@ -9,6 +10,7 @@ export const allQuestions: QuizQuestion[] = [
   ...fundamentalsQuestions,
   ...storageQuestions,
   ...processingQuestions,
+  ...modelingQuestions,
 ];
 
 // 問題ID -> 問題 のマップ（高速参照用）

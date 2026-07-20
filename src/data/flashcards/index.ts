@@ -39,4 +39,22 @@ export const flashcards: FlashCard[] = [
     back: "バッチは一定期間蓄積したデータを一括処理（高スループット向き）。ストリームは到着したデータを継続処理（低レイテンシ向き）。",
     tags: ["data-engineering", "batch", "stream"],
   },
+  {
+    id: "fc-additive-fact",
+    front: "加算ファクト（additive fact）とは？",
+    back: "ディメンションのどの方向に集計しても単純に足し算できるファクト。代表例: 売上金額、販売数量、原価、利益額。ディメンジョナルモデルで最も扱いやすい。",
+    tags: ["data-engineering", "dimensional-modeling", "fact"],
+  },
+  {
+    id: "fc-semi-additive-fact",
+    front: "半加算ファクト（semi-additive fact）とは？",
+    back: "一部のディメンションでは足せるが、別のディメンションでは足せないファクト。代表例は在庫残高・口座残高。店舗軸では足せるが時間軸では意味のない合計になるため、最新値・期末値・平均値などで集計する。",
+    tags: ["data-engineering", "dimensional-modeling", "semi-additive"],
+  },
+  {
+    id: "fc-non-additive-fact",
+    front: "非加算ファクト（non-additive fact）とは？",
+    back: "基本的に単純加算できないファクト。代表例は利益率・平均単価・割引率・コンバージョン率。集計時は元の加算ファクト（利益額÷売上額 等）から再計算する必要がある。",
+    tags: ["data-engineering", "dimensional-modeling", "non-additive"],
+  },
 ];

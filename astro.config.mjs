@@ -41,6 +41,7 @@ export default defineConfig({
             { label: "基礎", link: "/glossary/fundamentals/" },
             { label: "ストレージ", link: "/glossary/storage/" },
             { label: "処理モデル", link: "/glossary/processing/" },
+            { label: "モデリング", link: "/glossary/modeling/" },
           ],
         },
         { label: "クイズ", link: "/quiz/" },
