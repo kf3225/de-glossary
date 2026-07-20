@@ -25,9 +25,9 @@ export default defineConfig({
     starlight({
       title: "データエンジニアリング学習サイト",
       description: "用語集とクイズで学ぶ、個人用のデータエンジニアリング学習サイト",
-      defaultLocale: "ja",
+      defaultLocale: "root",
       locales: {
-        ja: { label: "日本語", lang: "ja" },
+        root: { label: "日本語", lang: "ja" },
       },
       social: {
         github: `https://github.com/${githubUser}/${repositoryName}`,
