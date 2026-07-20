@@ -1,0 +1,82 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# GitHub Pages への同時デプロイを制御
+# 進行中の本番デプロイはキャンセルせず、キュー中の古いものを整理する
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ビルド
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: pnpm をセットアップ
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: 依存関係をインストール（ロックファイル固定）
+        run: pnpm install --frozen-lockfile
+
+      - name: 問題データを検証
+        run: pnpm validate:questions
+
+      - name: 型チェック (astro check)
+        run: pnpm check
+
+      - name: ユニットテスト (vitest)
+        run: pnpm test
+
+      - name: ページをセットアップ
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: ビルド (astro build)
+        run: pnpm build
+
+      - name: ビルド成果物をアップロード
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    name: デプロイ
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: GitHub Pages へデプロイ
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: デプロイURLをサマリーへ出力
+        if: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          echo "### Deploy URL :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY

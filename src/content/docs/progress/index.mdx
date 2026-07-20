@@ -1,0 +1,14 @@
+---
+title: 学習状況
+description: 学習の進捗・統計・最近の回答を確認できます
+---
+
+import ProgressOverview from "../../../components/progress/ProgressOverview.svelte";
+
+<ProgressOverview client:load />
+
+## 表示内容
+
+- **全体サマリー**: 登録問題数、回答済み数、正答率、苦手問題数など
+- **最近の回答**: 最近回答した問題の履歴（最新10件）
+- **苦手問題**: 一度でも間違えた問題や復習対象の問題

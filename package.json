@@ -1,0 +1,38 @@
+{
+  "name": "de-glossary",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "個人用の用語集・クイズ学習サイト（Astro + Starlight + Svelte）",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate:questions": "tsx src/data/quizzes/validate.ts",
+    "ci": "pnpm check && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/svelte": "^6.0.0",
+    "@astrojs/starlight": "^0.32.0",
+    "astro": "^5.0.0",
+    "sharp": "^0.33.0",
+    "svelte": "^5.0.0",
+    "typescript": "^5.7.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "vitest": "^3.0.0"
+  }
+}

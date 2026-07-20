@@ -1,0 +1,80 @@
+---
+title: HTTP
+description: Web通信の中核を担うアプリケーション層プロトコル
+tags:
+  - network
+  - http
+  - web
+aliases:
+  - HyperText Transfer Protocol
+difficulty: basic
+related:
+  - tcp
+---
+
+import Quiz from "../../../../components/quiz/Quiz.svelte";
+
+## 概要
+
+**HTTP** は、Webブラウザとサーバーが通信するためのアプリケーション層プロトコルです。
+典型的にはTCP（HTTPSの場合はTLS over TCP）上で動作します。
+
+## 要点
+
+- **リクエスト・レスポンスモデル**: クライアントが要求し、サーバーが応答する
+- **ステートレス**: リクエスト間で状態を保持しない（Cookieで状態を補う）
+- **メソッド**: GET、POST、PUT、DELETE、PATCH など
+- **ステータスコード**: 200系（成功）、300系（リダイレクト）、400系（クライアントエラー）、500系（サーバーエラー）
+
+## 具体例
+
+シンプルなGETリクエストの例:
+
+```http
+GET /hello HTTP/1.1
+Host: example.com
+User-Agent: personal-learning-site
+Accept: */*
+```
+
+レスポンスの例:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Content-Length: 11
+
+hello world
+```
+
+## 関連用語
+
+- [TCP](../tcp/)
+
+## 確認問題
+
+<Quiz
+  client:load
+  quizId="http-page"
+  questions={[
+    {
+      id: "http-basic-001",
+      type: "single-choice",
+      prompt: "HTTP/1.1でホスト名に基づくバーチャルホストを実現するヘッダーはどれですか？",
+      choices: ["User-Agent", "Host", "Referer", "Accept-Language"],
+      answer: 1,
+      explanation: "HostヘッダーはHTTP/1.1で必須で、1つのIPアドレスで複数のホスト名を扱うバーチャルホストを可能にします。",
+      tags: ["network", "http"],
+      difficulty: "intermediate"
+    },
+    {
+      id: "http-basic-002",
+      type: "true-false",
+      prompt: "HTTPSはHTTPをTLSで暗号化したプロトコルである。",
+      answer: true,
+      explanation: "HTTPSはHTTPの通信をTLS（かつてはSSL）で暗号化し、盗聴・改ざん・なりすましを防ぎます。",
+      tags: ["network", "http", "https"],
+      difficulty: "basic"
+    }
+  ]}
+/>

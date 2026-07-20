@@ -1,0 +1,29 @@
+---
+title: 設定
+description: 学習履歴のエクスポート・インポート・リセットができます
+---
+
+import ProgressDataManager from "../../../components/settings/ProgressDataManager.svelte";
+
+<ProgressDataManager client:load />
+
+## 学習履歴の保存先
+
+学習履歴はブラウザの `localStorage` に保存されます。
+
+- 別のブラウザ・別の端末には自動同期されません
+- ローカル環境とGitHub Pagesでは保存領域が別になります
+- 公開URLが変わると以前の履歴を引き継げない場合があります
+- プライベートブラウジングでは保存が制限されることがあります
+- GitHubリポジトリへは一切送信されません
+
+## バックアップの推奨
+
+定期的にエクスポートして、安全な場所（ローカルのストレージやクラウドストレージなど）へ保存することをおすすめします。
+
+## インポート方式
+
+- **マージ**: 既存の履歴に追加で統合します。同じ問題IDがある場合は合算します。
+- **上書き**: 既存の履歴を破棄して、インポートするデータで置き換えます。
+
+どちらも整合性（`attempts = correctCount + incorrectCount`）が検証されます。

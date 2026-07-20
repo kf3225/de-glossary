@@ -1,0 +1,23 @@
+---
+title: フラッシュカード
+description: 用語の表面と裏面を交互に表示して復習できます
+---
+
+import FlashCards from "../../../components/flashcards/FlashCards.svelte";
+import { flashcards } from "../../../data/flashcards";
+
+## すべてのカード
+
+登録されている全カードを順番に復習できます。
+カードをクリックするか、Space/Enter キーで裏表を切り替えられます。
+← → キーで前後に移動し、S キーでシャッフルします。
+
+<FlashCards
+  client:load
+  cards={flashcards}
+/>
+
+## カードの追加について
+
+カードは `src/data/flashcards/index.ts` で管理しています。
+個別の用語ページにだけカードを置きたい場合は、MDX内で直接 `<FlashCards>` を使うこともできます。

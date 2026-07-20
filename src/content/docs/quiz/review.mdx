@@ -1,0 +1,18 @@
+---
+title: 苦手問題
+description: 一度でも間違えた問題や手動で復習対象に設定した問題を集中して復習できます
+---
+
+import ReviewQuestionList from "../../../components/review/ReviewQuestionList.svelte";
+
+<ReviewQuestionList client:load />
+
+## 苦手問題の基準
+
+次のいずれかに該当する問題を「苦手問題」として扱います。
+
+- 一度でも不正解になった
+- 正答率が80%未満
+- 手動で復習対象に設定した
+
+ただし、まだ一度も回答していない問題は含まれません。

@@ -1,0 +1,38 @@
+---
+title: ホーム
+description: 個人用の用語集・クイズ学習サイト
+template: splash
+---
+
+import QuizLauncher from "../../components/quiz/QuizLauncher.svelte";
+import { flashcards } from "../../data/flashcards";
+
+<div class="splash-hero">
+  <h1>個人学習サイト</h1>
+  <p>用語集とクイズで知識を定着させる、個人用の学習サイトです。</p>
+  <ul>
+    <li><a href="./glossary/">用語集を見る</a></li>
+    <li><a href="./quiz/">クイズに挑戦する</a></li>
+    <li><a href="./quiz/review/">苦手問題を復習する</a></li>
+    <li><a href="./flashcards/">フラッシュカードで復習する</a></li>
+    <li><a href="./progress/">学習状況を見る</a></li>
+    <li><a href="./settings/">学習履歴のバックアップ・復元</a></li>
+  </ul>
+</div>
+
+## 学習履歴について
+
+このサイトの学習履歴は、ブラウザの `localStorage` に保存されます。
+
+- サーバーへ送信されません
+- 別のブラウザ・別の端末には自動同期されません
+- ローカル環境とGitHub Pagesでは保存領域が別になります
+- 定期的に <a href="./settings/">設定画面</a> からエクスポートしておくことをおすすめします
+
+詳細は <a href="./settings/">設定画面</a> または <a href="https://github.com/kf3225/de-glossary">README</a> を参照してください。
+
+## クイックスタート
+
+ランダムに10問出題するクイズをすぐ始められます。
+
+<QuizLauncher client:load title="クイッククイズ" />

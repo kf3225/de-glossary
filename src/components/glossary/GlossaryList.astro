@@ -1,0 +1,55 @@
+---
+// 用語集一覧のラッパー
+// MDXのfrontmatterを静的に収集して、Svelteコンポーネントへ渡す
+import GlossaryListSvelte from "./GlossaryList.svelte";
+
+type GlossaryEntry = {
+  slug: string;
+  title: string;
+  description: string;
+  tags: string[];
+  difficulty: "basic" | "intermediate" | "advanced";
+  url: string;
+};
+
+// Starlight の docs コレクションから frontmatter を取得
+// eager: ビルド時にすべて読み込む
+const modules = import.meta.glob("../../content/docs/glossary/**/*.mdx", {
+  eager: true,
+});
+
+// Astro で解決済みの base を使う
+const base = import.meta.env.BASE_URL;
+
+function buildUrl(slug: string): string {
+  // slug は "glossary/network/tcp" のような形式を想定
+  // base が "/" で終わることを前提に結合する
+  const normalizedBase = base.endsWith("/") ? base : `${base}/`;
+  return `${normalizedBase}${slug}/`;
+}
+
+const entries: GlossaryEntry[] = Object.entries(modules)
+  .map(([path, mod]) => {
+    // path は "../../content/docs/glossary/network/tcp.mdx" 形式
+    const m = mod as {
+      frontmatter?: Record<string, unknown>;
+    };
+    const fm = m.frontmatter ?? {};
+    // slug 相当を path から計算
+    const match = path.match(/content\/docs\/(.+)\.mdx$/);
+    const slug = match ? match[1].replace(/^\/+/, "") : "";
+    return {
+      slug,
+      title: String(fm.title ?? ""),
+      description: String(fm.description ?? ""),
+      tags: Array.isArray(fm.tags) ? (fm.tags as string[]) : [],
+      difficulty:
+        (fm.difficulty as GlossaryEntry["difficulty"]) ?? "basic",
+      url: buildUrl(slug),
+    };
+  })
+  .filter((e) => e.title.length > 0)
+  .sort((a, b) => a.title.localeCompare(b.title, "ja"));
+---
+
+<GlossaryListSvelte client:load {entries} />
