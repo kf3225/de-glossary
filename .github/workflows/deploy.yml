@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pages: write
+      id-token: write
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
@@ -50,6 +52,8 @@ jobs:
       - name: ページをセットアップ
         id: pages
         uses: actions/configure-pages@v5
+        # リポジトリでPages未設定なら自動で有効化する
+        enablement: true
 
       - name: ビルド (astro build)
         run: pnpm build
