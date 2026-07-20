@@ -16,6 +16,8 @@ related:
 
 import Quiz from "../../../../components/quiz/Quiz.svelte";
 
+export const base = import.meta.env.BASE_URL;
+
 ## 概要
 
 **ETL**（Extract Transform Load）と **ELT**（Extract Load Transform）は、データソースからターゲット（多くはDWHやデータレイク）へデータを連携する際の2つの主要なパラダイムです。
@@ -53,7 +55,7 @@ FROM {{ source('raw', 'orders') }}
 
 ## 関連用語
 
-- [データウェアハウス（DWH）](/glossary/fundamentals/data-warehouse/)
+- <a href={`${base}glossary/fundamentals/data-warehouse/`}>データウェアハウス（DWH）</a>
 
 ## 確認問題
 

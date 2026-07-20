@@ -16,6 +16,8 @@ related:
 
 import Quiz from "../../../../components/quiz/Quiz.svelte";
 
+export const base = import.meta.env.BASE_URL;
+
 ## 概要
 
 **データウェアハウス（DWH）** は、企業・組織の分析用途に最適化されたデータ基盤です。
@@ -59,8 +61,8 @@ ORDER BY total_sales DESC;
 
 ## 関連用語
 
-- [ETL と ELT](/glossary/fundamentals/etl-elt/)
-- [データレイク](/glossary/storage/data-lake/)
+- <a href={`${base}glossary/fundamentals/etl-elt/`}>ETL と ELT</a>
+- <a href={`${base}glossary/storage/data-lake/`}>データレイク</a>
 
 ## 確認問題
 

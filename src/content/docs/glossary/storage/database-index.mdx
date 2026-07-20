@@ -16,6 +16,8 @@ related:
 
 import Quiz from "../../../../components/quiz/Quiz.svelte";
 
+export const base = import.meta.env.BASE_URL;
+
 ## 概要
 
 **データベースインデックス** は、特定の列に基づく行の検索を高速化するための補助的なデータ構造です。
@@ -52,7 +54,7 @@ WHERE customer_id = 42
 
 ## 関連用語
 
-- [データウェアハウス（DWH）](/glossary/fundamentals/data-warehouse/)
+- <a href={`${base}glossary/fundamentals/data-warehouse/`}>データウェアハウス（DWH）</a>
 
 ## 確認問題
 

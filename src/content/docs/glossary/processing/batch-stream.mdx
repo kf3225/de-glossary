@@ -16,6 +16,8 @@ related:
 
 import Quiz from "../../../../components/quiz/Quiz.svelte";
 
+export const base = import.meta.env.BASE_URL;
+
 ## 概要
 
 **バッチ処理** と **ストリーム処理** は、大量データを処理する際の2つの主要モデルです。
@@ -56,7 +58,7 @@ agg.writeStream.format("console").start()
 
 ## 関連用語
 
-- [ETL と ELT](/glossary/fundamentals/etl-elt/)
+- <a href={`${base}glossary/fundamentals/etl-elt/`}>ETL と ELT</a>
 
 ## 確認問題
 
