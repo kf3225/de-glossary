@@ -33,7 +33,10 @@ const storageErrorInternal = writable<boolean>(false);
 const settingsInternal = writable<LearningSettings>(DEFAULT_SETTINGS);
 
 // ブラウザでのみ初期化する
+// SSR 時に window が未定義でも初期化済みフラグを立てないことで、
+// クライアント側で正しく初期化し直せるようにする
 export function initProgressStore(): void {
+  if (typeof window === "undefined") return;
   if (initialized) return;
   initialized = true;
   storageAvailable = isLocalStorageAvailable();
