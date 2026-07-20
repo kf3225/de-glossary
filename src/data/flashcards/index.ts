@@ -57,4 +57,22 @@ export const flashcards: FlashCard[] = [
     back: "基本的に単純加算できないファクト。代表例は利益率・平均単価・割引率・コンバージョン率。集計時は元の加算ファクト（利益額÷売上額 等）から再計算する必要がある。",
     tags: ["data-engineering", "dimensional-modeling", "non-additive"],
   },
+  {
+    id: "fc-transaction-fact",
+    front: "トランザクション・ファクトテーブルとは？",
+    back: "離散型イベント（特定時点・短い期間のストーリー）を1行に記録する、最も一般的なファクトテーブル。1行 = 1トランザクション（または1明細）。追加のみ（append-only）。例: POS売上、クリックログ、決済1件。ファクトは加算が主役。",
+    tags: ["data-engineering", "dimensional-modeling", "fact-table", "transaction"],
+  },
+  {
+    id: "fc-periodic-snapshot-fact",
+    front: "定期スナップショット・ファクトテーブルとは？",
+    back: "反復型イベントを記録するファクトテーブル。毎日・毎月など予測可能な間隔で状態をサンプリング。1行 = エンティティ×期間。数値は半加算（時間軸では足せない）。例: 日次在庫、月次口座残高、月初従業員数。",
+    tags: ["data-engineering", "dimensional-modeling", "fact-table", "periodic-snapshot"],
+  },
+  {
+    id: "fc-accumulating-snapshot-fact",
+    front: "累積スナップショット・ファクトテーブルとは？",
+    back: "発展型イベント（数日〜数ヶ月かかるプロセスの軌跡）を1行で追うファクトテーブル。1行 = 1プロセス/ライフサイクル。マイルストーンごとの日付列（注文日・出荷日・配達日・支払日等）を持ち、進行に合わせて同じ行を更新。リードタイム・ボトルネック・未完了案件の分析に強い。",
+    tags: ["data-engineering", "dimensional-modeling", "fact-table", "accumulating-snapshot"],
+  },
 ];

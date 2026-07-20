@@ -80,4 +80,101 @@ export const modelingQuestions = [
     tags: ["data-engineering", "dimensional-modeling", "fact", "granularity"],
     difficulty: "intermediate" as const,
   },
+  {
+    id: "de-fact-table-types-001",
+    type: "single-choice" as const,
+    prompt: "トランザクション・ファクトテーブルの説明として正しいものはどれですか？",
+    choices: [
+      "毎日や毎月など予測可能な間隔で状態を記録する",
+      "1つのプロセス進行に合わせて同じ行を何度も更新する",
+      "発生した瞬間または直後に完了する離散型イベントを1行として記録し、原則として過去行は更新しない",
+      "マイルストーンごとのリードタイム分析に特化している",
+    ],
+    answer: 2,
+    explanation:
+      "トランザクション・ファクトは離散型イベントを記録する最も一般的な型です。1行 = 1トランザクション（または1明細）で、追加のみ（append-only）が基本です。",
+    tags: [
+      "data-engineering",
+      "dimensional-modeling",
+      "fact-table",
+      "transaction",
+    ],
+    difficulty: "basic" as const,
+  },
+  {
+    id: "de-fact-table-types-002",
+    type: "true-false" as const,
+    prompt:
+      "定期スナップショット・ファクトテーブルの数値（例：日次在庫残高）は、時間軸で足し合わせても意味のある集計になるとは限らない。",
+    answer: true,
+    explanation:
+      "定期スナップショットは半加算（semi-additive）の代表例です。店舗軸などでは足せますが、時間軸で足すと意味のない合計になるため、最新値・期末値・平均値などで集計します。",
+    tags: [
+      "data-engineering",
+      "dimensional-modeling",
+      "fact-table",
+      "periodic-snapshot",
+      "semi-additive",
+    ],
+    difficulty: "intermediate" as const,
+  },
+  {
+    id: "de-fact-table-types-003",
+    type: "single-choice" as const,
+    prompt: "累積スナップショット・ファクトテーブルが最も得意とする分析はどれですか？",
+    choices: [
+      "1件ごとの売上を時系列に蓄積する",
+      "毎月末の口座残高の推移を見る",
+      "注文→出荷→配達→支払い など、プロセス全体のリードタイムやボトルネックを見る",
+      "個々のクリックイベントを分析する",
+    ],
+    answer: 2,
+    explanation:
+      "累積スナップショットは発展型イベントを1行で追跡し、各マイルストーンの日付列を持つため、マイルストーン間の日数（リードタイム）や未完了案件を一度に把握できます。",
+    tags: [
+      "data-engineering",
+      "dimensional-modeling",
+      "fact-table",
+      "accumulating-snapshot",
+    ],
+    difficulty: "intermediate" as const,
+  },
+  {
+    id: "de-fact-table-types-004",
+    type: "true-false" as const,
+    prompt:
+      "発展型イベントの各マイルストーン（注文・出荷・配達など）は、それぞれ別の離散型イベントとしてモデリングすることもできるが、累積スナップショットで1行にまとめるとプロセス全体の重要指標が見えやすくなる。",
+    answer: true,
+    explanation:
+      "各ステータスを独立したトランザクション・ファクトとして持つことも技術的には可能です。しかし、ステークホルダーが本当に欲しい「全体リードタイム」「ボトルネック工程」「保留案件」は、複数の動詞を1行に束ねた累積スナップショットでこそ一目で分かります。",
+    tags: [
+      "data-engineering",
+      "dimensional-modeling",
+      "fact-table",
+      "accumulating-snapshot",
+    ],
+    difficulty: "advanced" as const,
+  },
+  {
+    id: "de-fact-table-types-005",
+    type: "single-choice" as const,
+    prompt:
+      "毎月初に全従業員の人数を記録するテーブルは、3種類のうちどれに該当しますか？",
+    choices: [
+      "トランザクション・ファクト",
+      "定期スナップショット・ファクト",
+      "累積スナップショット・ファクト",
+      "どれにも該当しない",
+    ],
+    answer: 1,
+    explanation:
+      "毎月という一定間隔で状態（従業員数）を計測するため定期スナップショットです。月をまたいで人数を足しても意味がない（半加算）ため、最新月や平均で見るのが自然です。",
+    tags: [
+      "data-engineering",
+      "dimensional-modeling",
+      "fact-table",
+      "periodic-snapshot",
+    ],
+    difficulty: "intermediate" as const,
+  },
 ] satisfies QuizQuestion[];

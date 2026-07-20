@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import type { QuizQuestion } from "@/types/quiz";
   import SingleChoiceQuestion from "./SingleChoiceQuestion.svelte";
   import TrueFalseQuestion from "./TrueFalseQuestion.svelte";
@@ -10,6 +11,9 @@
   export let answer: unknown = null;
   export let locked = false;
 
+  // 子から親へイベントを転送する
+  const dispatch = createEventDispatcher<{ selected: unknown }>();
+
   // 型アサーションはテンプレート内で使えないため派生値で扱う
   $: answerNumber =
     question.type === "single-choice" ? (answer as number | null) : null;
@@ -18,9 +22,11 @@
 
   function setAnswerNumber(value: number) {
     answer = value;
+    dispatch("selected", value);
   }
   function setAnswerBoolean(value: boolean) {
     answer = value;
+    dispatch("selected", value);
   }
 </script>
 
