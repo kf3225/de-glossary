@@ -1,0 +1,99 @@
+---
+title: ETL と ELT
+description: データの抽出・変換・格納の2つのパラダイム
+tags:
+  - data-engineering
+  - etl
+  - elt
+  - pipeline
+aliases:
+  - Extract Transform Load
+  - Extract Load Transform
+difficulty: basic
+related:
+  - data-warehouse
+---
+
+import Quiz from "../../../../components/quiz/Quiz.svelte";
+
+## 概要
+
+**ETL**（Extract Transform Load）と **ELT**（Extract Load Transform）は、データソースからターゲット（多くはDWHやデータレイク）へデータを連携する際の2つの主要なパラダイムです。
+変換（Transform）を **どのタイミング** で行うかが最大の違いです。
+
+## 要点
+
+- **ETL**: 抽出 → 変換 → 格納。変換を専用のETLエンジン上で行ってからターゲットへ書き込む
+- **ELT**: 抽出 → 格納 → 変換。生データを先にターゲットへ入れ、ターゲット上の計算力（DWHのSQLエンジンなど）を使って変換する
+- **傾向**: クラウドDWHの性能向上により、ELTが主流になりつつある
+- **ツール例**: ETL（Airflow、dbt、Talend）、ELT（Fivetran、dbt + DWH）
+
+## 具体例
+
+典型的なELTパイプライン:
+
+```text
+[PostgreSQL] ─┐
+[S3 CSV]     ─┼─(Extract/Load)─▶ [Snowflake RAW schema]
+[API]       ──┘                       │
+                                       └─(Transform: dbt SQL)─▶ [mart schema]
+```
+
+dbt の変換モデル例:
+
+```sql
+-- models/stg_orders.sql
+SELECT
+  order_id,
+  customer_id,
+  order_total_cents / 100.0 AS order_total_usd,
+  ordered_at
+FROM {{ source('raw', 'orders') }}
+```
+
+## 関連用語
+
+- [データウェアハウス（DWH）](../data-warehouse/)
+
+## 確認問題
+
+<Quiz
+  client:load
+  quizId="etl-elt-page"
+  questions={[
+    {
+      id: "de-etl-elt-001",
+      type: "single-choice",
+      prompt: "ETL と ELT の最大の違いは何ですか？",
+      choices: [
+        "Transform を行うタイミング",
+        "データの暗号化方式",
+        "ストレージのコスト計算方法",
+        "ネットワークプロトコルの違い"
+      ],
+      answer: 0,
+      explanation: "ETL は抽出後・格納前に変換し、ELT はターゲットへ格納した後に変換します。",
+      tags: ["data-engineering", "etl", "elt"],
+      difficulty: "basic"
+    },
+    {
+      id: "de-etl-elt-002",
+      type: "true-false",
+      prompt: "ELT は、ターゲットとなるクラウドDWHの計算能力を活用して変換を行うのが一般的である。",
+      answer: true,
+      explanation: "現代のDWH（Snowflake、BigQuery、Redshift など）は強力なSQLエンジンを持つため、生データを先にロードしてSQLで変換するELTが広く採用されています。",
+      tags: ["data-engineering", "elt", "data-warehouse"],
+      difficulty: "intermediate"
+    },
+    {
+      id: "de-etl-elt-003",
+      type: "single-choice",
+      prompt: "次のうち、ELT パイプラインで一般的に変換（Transform）ツールとして使われるのはどれですか？",
+      choices: ["dbt", "nginx", "Kubernetes", "Redis"],
+      answer: 0,
+      explanation: "dbt（data build tool）は、DWH上のSQLで変換を定義・実行する、ELT アーキテクチャの定番ツールです。",
+      tags: ["data-engineering", "elt", "dbt"],
+      difficulty: "intermediate"
+    }
+  ]}
+/>

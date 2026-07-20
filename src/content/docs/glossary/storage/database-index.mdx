@@ -1,0 +1,98 @@
+---
+title: データベースインデックス
+description: 検索性能を向上させるためのデータベースのデータ構造
+tags:
+  - data-engineering
+  - database
+  - index
+  - performance
+aliases:
+  - Database Index
+  - DB Index
+difficulty: intermediate
+related:
+  - data-warehouse
+---
+
+import Quiz from "../../../../components/quiz/Quiz.svelte";
+
+## 概要
+
+**データベースインデックス** は、特定の列に基づく行の検索を高速化するための補助的なデータ構造です。
+一般的にB+Treeやハッシュインデックスが使われます。
+データエンジニアリングでは、DWHの事前集計テーブルやマート層の性能を左右する重要なチューニング対象です。
+
+## 要点
+
+- **検索高速化**: `WHERE`、`JOIN`、`ORDER BY` などを高速化
+- **トレードオフ**: 書き込み時のインデックス更新コストが発生する
+- **ストレージ消費**: インデックス自体にも容量が必要
+- **代表構造**: B+Tree（範囲検索向け）、ハッシュ（等価検索向け）、ブルームフィルタ（存在確認）
+
+## 具体例
+
+PostgreSQLでのインデックス作成例:
+
+```sql
+-- 単一カラムのインデックス
+CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+
+-- 複合インデックス（左端プレフィックスが重要）
+CREATE INDEX idx_orders_customer_date ON orders(customer_id, ordered_at);
+
+-- 実行計画の確認（インデックスが使われているか）
+EXPLAIN ANALYZE
+SELECT SUM(amount_jpy)
+FROM orders
+WHERE customer_id = 42
+  AND ordered_at >= '2025-01-01';
+```
+
+実行計画で `Seq Scan` ではなく `Index Scan` になっていれば、インデックスが活用されています。
+
+## 関連用語
+
+- [データウェアハウス（DWH）](../data-warehouse/)
+
+## 確認問題
+
+<Quiz
+  client:load
+  quizId="db-index-page"
+  questions={[
+    {
+      id: "de-db-index-001",
+      type: "single-choice",
+      prompt: "データベースのインデックスに関する説明として正しいものはどれですか？",
+      choices: [
+        "データを必ず圧縮する",
+        "検索性能を向上させるが、書き込み性能を下げる可能性がある",
+        "データの整合性を保証する機能である",
+        "バックアップ用途の機能である"
+      ],
+      answer: 1,
+      explanation: "インデックスは検索を高速にしますが、書き込み時に更新が発生するため、書き込み性能とのトレードオフがあります。",
+      tags: ["data-engineering", "database", "index"],
+      difficulty: "intermediate"
+    },
+    {
+      id: "de-db-index-002",
+      type: "true-false",
+      prompt: "複合インデックス (a, b, c) がある場合、WHERE b = ? だけの検索でも必ずインデックスが使用される。",
+      answer: false,
+      explanation: "複合インデックスは左端プレフィックスが重要で、先頭列 a を条件に含めないとインデックスは効きにくくなります。",
+      tags: ["data-engineering", "database", "index"],
+      difficulty: "advanced"
+    },
+    {
+      id: "de-db-index-003",
+      type: "single-choice",
+      prompt: "ACID特性に含まれないものはどれですか？",
+      choices: ["原子性 (Atomicity)", "一貫性 (Consistency)", "可用性 (Availability)", "分離性 (Isolation)"],
+      answer: 2,
+      explanation: "ACID は Atomicity・Consistency・Isolation・Durability の頭文字です。Availability（可用性）は含まれません。",
+      tags: ["data-engineering", "database", "transaction", "acid"],
+      difficulty: "advanced"
+    }
+  ]}
+/>

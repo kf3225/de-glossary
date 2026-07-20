@@ -1,0 +1,96 @@
+---
+title: データウェアハウス（DWH）
+description: 分析用途に最適化されたデータ保存基盤
+tags:
+  - data-engineering
+  - data-warehouse
+  - analytics
+aliases:
+  - Data Warehouse
+  - DWH
+difficulty: basic
+related:
+  - etl-elt
+  - data-lake
+---
+
+import Quiz from "../../../../components/quiz/Quiz.svelte";
+
+## 概要
+
+**データウェアハウス（DWH）** は、企業・組織の分析用途に最適化されたデータ基盤です。
+トランザクション処理向けのOLTPシステムとは異なり、大量データの **集計・分析（OLAP）** に特化しています。
+
+## 要点
+
+- **目的**: 分析・レポーティング・BI
+- **構造**: 多くは星型/雪花型スキーマ（ファクト表 + ディメンション表）
+- **特性**: 列指向ストレージ、大量スキャンの高速化、書き込みより読み込み最適化
+- **代表例**: Snowflake、BigQuery、Amazon Redshift、Azure Synapse
+
+## 具体例
+
+典型的なスタースキーマ:
+
+```text
+                [dim_date]
+                    │
+                    │
+[fact_sales] ──[dim_product]
+                    │
+                    │
+                [dim_customer]
+```
+
+BigQuery での集計クエリ例:
+
+```sql
+SELECT
+  d.date,
+  p.category,
+  SUM(f.amount_jpy) AS total_sales
+FROM fact_sales f
+JOIN dim_date d     ON f.date_id  = d.date_id
+JOIN dim_product p  ON f.product_id = p.product_id
+WHERE d.year = 2025
+GROUP BY d.date, p.category
+ORDER BY total_sales DESC;
+```
+
+## 関連用語
+
+- [ETL と ELT](../etl-elt/)
+- [データレイク](../data-lake/)
+
+## 確認問題
+
+<Quiz
+  client:load
+  quizId="dwh-page"
+  questions={[
+    {
+      id: "de-dwh-001",
+      type: "single-choice",
+      prompt: "データウェアハウスが最も最適化されている処理はどれですか？",
+      choices: [
+        "トランザクション処理（OLTP）",
+        "分析処理（OLAP）",
+        "画像処理",
+        "ストリーミング配信"
+      ],
+      answer: 1,
+      explanation: "DWH は大量データの集計・分析（OLAP）向けに設計されており、列指向ストレージや MPP アーキテクチャを採用しています。",
+      tags: ["data-engineering", "data-warehouse", "olap"],
+      difficulty: "basic"
+    },
+    {
+      id: "de-dwh-002",
+      type: "true-false",
+      prompt: "DWH は、1件ごとの UPDATE/DELETE をOLTPシステムと同等に高速に処理することを主目的として設計されている。",
+      answer: false,
+      explanation: "DWH はバッチロードと大量スキャンを主目的としており、1件更新のレイテンシよりも集計スループットを優先します。",
+      tags: ["data-engineering", "data-warehouse"],
+      difficulty: "intermediate"
+    }
+  ]}
+/>

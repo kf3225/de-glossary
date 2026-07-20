@@ -1,0 +1,102 @@
+---
+title: バッチ処理 と ストリーム処理
+description: 大量データを処理する2つの主要モデル
+tags:
+  - data-engineering
+  - batch
+  - stream
+  - processing
+aliases:
+  - Batch Processing
+  - Stream Processing
+difficulty: intermediate
+related:
+  - etl-elt
+---
+
+import Quiz from "../../../../components/quiz/Quiz.svelte";
+
+## 概要
+
+**バッチ処理** と **ストリーム処理** は、大量データを処理する際の2つの主要モデルです。
+「データをいつ・どのように処理するか」の考え方が異なります。
+
+## 要点
+
+- **バッチ処理**: 一定期間蓄積したデータを、スケジュール駆動で一括処理する
+  - 例: 毎夜0時に1日分の売上を集計、月次請求バッチ
+  - ツール: Apache Spark、Apache Hive、dbt
+- **ストリーム処理**: 到着したデータを継続的に処理する
+  - 例: リアルタイム異常検知、ライブダッシュボード
+  - ツール: Apache Kafka Streams、Apache Flink、Spark Structured Streaming
+- **レイテンシ vs スループット**: ストリームは低レイテンシ、バッチは高スループットに向く
+
+## 具体例
+
+バッチとストリームの違いを擬似コードで表現:
+
+```python
+# バッチ処理: 1時間ごとにファイルを取り込んで集計
+def run_hourly_batch():
+    files = list_files(bucket="events", since="2025-01-01T00:00")
+    df = spark.read.parquet(*files)
+    df.groupBy("event_type").count().write.mode("overwrite").parquet("out/")
+
+# ストリーム処理: Kafka トピックを読み続ける
+stream = spark \
+    .readStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", "broker:9092") \
+    .option("subscribe", "events") \
+    .load()
+
+agg = stream.groupBy(window("1 minute"), "event_type").count()
+agg.writeStream.format("console").start()
+```
+
+## 関連用語
+
+- [ETL と ELT](../etl-elt/)
+
+## 確認問題
+
+<Quiz
+  client:load
+  quizId="batch-stream-page"
+  questions={[
+    {
+      id: "de-batch-stream-001",
+      type: "single-choice",
+      prompt: "ストリーム処理がバッチ処理に比べて優れている点はどれですか？",
+      choices: [
+        "レイテンシが低く、イベント到着後にすぐ結果を出せる",
+        "単純な集計において常に高スループットである",
+        "ジョブの再実行が容易である",
+        "ストレージコストが常に安い"
+      ],
+      answer: 0,
+      explanation: "ストリーム処理はイベント到着ごとに継続的に処理するため、バッチに比べて低レイテンシです。反面、大規模な再処理はバッチの方が向いています。",
+      tags: ["data-engineering", "stream", "batch"],
+      difficulty: "intermediate"
+    },
+    {
+      id: "de-batch-stream-002",
+      type: "true-false",
+      prompt: "バッチ処理は、夜間に1日分のデータを一括で集計するようなユースケースに向いている。",
+      answer: true,
+      explanation: "スループット重視で、ある程度まとまったデータ量をまとめて処理する用途ではバッチが効率的です。",
+      tags: ["data-engineering", "batch"],
+      difficulty: "basic"
+    },
+    {
+      id: "de-batch-stream-003",
+      type: "single-choice",
+      prompt: "次のうち、分散型ストリーム／バッチ処理エンジンとしてよく使われるのはどれですか？",
+      choices: ["Apache Spark", "nginx", "memcached", "PostgreSQL"],
+      answer: 0,
+      explanation: "Apache Spark はバッチ・ストリーム両方を扱える分散処理エンジンとして、データエンジニアリングで広く使われています。",
+      tags: ["data-engineering", "spark", "processing"],
+      difficulty: "intermediate"
+    }
+  ]}
+/>

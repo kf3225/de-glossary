@@ -1,0 +1,87 @@
+---
+title: データレイク
+description: 構造化・非構造化を問わず生データを蓄積する中央リポジトリ
+tags:
+  - data-engineering
+  - data-lake
+  - storage
+aliases:
+  - Data Lake
+difficulty: intermediate
+related:
+  - data-warehouse
+  - etl-elt
+---
+
+import Quiz from "../../../../components/quiz/Quiz.svelte";
+
+## 概要
+
+**データレイク** は、構造化・半構造化・非構造化を問わず、生データをオリジナル形式で大量に蓄積できる中央リポジトリです。
+後にどのように使われるか確定していないデータも含めて **まず保存し、必要になった時に変換して利用する** という柔軟性を持ちます。
+
+## 要点
+
+- **目的**: データの一元蓄積（Schema-on-Read）
+- **中身**: CSV、JSON、Parquet、画像、ログ、ストリームデータ等々
+- **ストレージ**: コストの安いオブジェクトストレージ（S3、GCS、Azure Blob、HDFS 等）
+- **典型フォーマット**: 列指向 Parquet/ORC、行指向 JSON/Avro
+- **リスク**: ガバナンス不足で「データスワンプ」化しやすい
+
+## 具体例
+
+AWS でのシンプルな構成:
+
+```text
+[源システム] ─▶ [S3 (Raw bucket)]
+                    │
+                    ├─(AWS Glue/Athena)─▶ [アドホック分析]
+                    └─(ETL/ELT)─▶ [Redshift (DWH)]
+```
+
+データレイク vs DWH の対比:
+
+| 項目       | データレイク          | DWH                  |
+|------------|----------------------|----------------------|
+| データ形状 | Raw / 多様           | モデリング済み       |
+| スキーマ   | Schema-on-Read       | Schema-on-Write      |
+| 主目的     | データの一元蓄積     | 分析・BI             |
+| コスト     | 安め                 | やや高め             |
+
+## 関連用語
+
+- [データウェアハウス（DWH）](../data-warehouse/)
+- [ETL と ELT](../etl-elt/)
+
+## 確認問題
+
+<Quiz
+  client:load
+  quizId="data-lake-page"
+  questions={[
+    {
+      id: "de-data-lake-001",
+      type: "single-choice",
+      prompt: "データレイクの特徴として最も適切なものはどれですか？",
+      choices: [
+        "事前に定義したスキーマにデータを当てはめて保存する",
+        "構造化・非構造化を問わず、生データをオリジナル形式で蓄積する",
+        "トランザクションのACID特性に特化する",
+        "1件ごとの UPDATE を高速化する"
+      ],
+      answer: 1,
+      explanation: "データレイクは Schema-on-Read を基本とし、後で使うときまでスキーマを確定させず多様なデータをそのまま保存します。",
+      tags: ["data-engineering", "data-lake", "storage"],
+      difficulty: "intermediate"
+    },
+    {
+      id: "de-data-lake-002",
+      type: "true-false",
+      prompt: "データレイクに保存するデータは、Parquet のような列指向フォーマットよりも必ずCSVを使う必要がある。",
+      answer: false,
+      explanation: "データレイクはフォーマットを問いません。分析効率を考慮して Parquet/ORC などの列指向フォーマットがよく使われます。",
+      tags: ["data-engineering", "data-lake", "parquet"],
+      difficulty: "intermediate"
+    }
+  ]}
+/>

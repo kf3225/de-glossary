@@ -23,8 +23,8 @@ export default defineConfig({
   integrations: [
     svelte(),
     starlight({
-      title: "個人学習サイト",
-      description: "用語集とクイズで学ぶ、個人用の知識管理サイト",
+      title: "データエンジニアリング学習サイト",
+      description: "用語集とクイズで学ぶ、個人用のデータエンジニアリング学習サイト",
       defaultLocale: "ja",
       locales: {
         ja: { label: "日本語", lang: "ja" },
@@ -38,9 +38,9 @@ export default defineConfig({
           label: "用語集",
           items: [
             { label: "概要", link: "/glossary/" },
-            { label: "ネットワーク", link: "/glossary/network/" },
-            { label: "データベース", link: "/glossary/database/" },
-            { label: "プログラミング", link: "/glossary/programming/" },
+            { label: "基礎", link: "/glossary/fundamentals/" },
+            { label: "ストレージ", link: "/glossary/storage/" },
+            { label: "処理モデル", link: "/glossary/processing/" },
           ],
         },
         { label: "クイズ", link: "/quiz/" },

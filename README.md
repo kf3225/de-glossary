@@ -1,9 +1,19 @@
 # de-glossary
 
-個人用の用語集・クイズ学習サイトです。
+個人用の **データエンジニアリング** 学習サイトです。
 [Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/) + [Svelte](https://svelte.dev/) + [TypeScript](https://www.typescriptlang.org/) で構築された静的サイトで、GitHub Pagesへデプロイして利用します。
 
 学習履歴はブラウザの `localStorage` にのみ保存され、サーバーへは送信されません。
+
+---
+
+## 公開サイト
+
+次のURLで公開しています。
+
+> **https://kf3225.github.io/de-glossary/**
+
+Pull Request のプレビューやローカル確認以外は、上記URLを開けばいつでも学習できます。
 
 ---
 
@@ -29,8 +39,14 @@
 
 ## 概要
 
-技術用語をMarkdown/MDXで整理し、各用語ページに確認クイズを配置できます。
+データエンジニアリングの概念を Markdown/MDX で整理し、各用語ページに確認クイズを配置しています。
 さらに横断クイズ、苦手問題モード、フラッシュカード、進捗画面、学習履歴のバックアップ/復元を備えています。
+
+扱う領域の例:
+
+- **基礎**: ETL/ELT、データウェアハウス（DWH）
+- **ストレージ**: データレイク、データベースインデックス
+- **処理モデル**: バッチ処理、ストリーム処理
 
 - 静的サイトとして生成されるため、GitHub Pagesでホストできます
 - バックエンド・データベースは使用しません
@@ -53,8 +69,8 @@
 
 | 用途 | 技术 |
 |---|---|
-| サイト生成 | Astro + Starlight + MDX |
-| インタラクティブUI | Svelte 4 |
+| サイト生成 | Astro 5 + Starlight + MDX |
+| インタラクティブUI | Svelte 5 |
 | 言語 | TypeScript |
 | テスト | Vitest |
 | パッケージマネージャ | pnpm |
@@ -98,7 +114,7 @@ pnpm validate:questions  # 問題データの検証スクリプト（重複ID等
 一括実行:
 
 ```bash
-pnpm ci       # check + test + build
+pnpm run ci   # check + test + build （※ pnpm ci は別コマンドなので run 必須）
 ```
 
 ## プレビュー
@@ -120,52 +136,65 @@ http://localhost:4321/de-glossary/
 
 `src/content/docs/glossary/<カテゴリ>/<term>.mdx` を作成します。
 
+現在のカテゴリ構成:
+
+```text
+src/content/docs/glossary/
+├─ fundamentals/   # ETL/ELT, DWH 等
+├─ storage/        # データレイク, インデックス 等
+└─ processing/     # バッチ, ストリーム 等
+```
+
 frontmatter の例:
 
 ```yaml
 ---
-title: TCP
-description: 信頼性のある通信を提供するトランスポート層プロトコル
+title: データレイク
+description: 構造化・非構造化を問わず生データを蓄積する中央リポジトリ
 tags:
-  - network
-  - tcp
+  - data-engineering
+  - data-lake
+  - storage
 aliases:
-  - Transmission Control Protocol
-difficulty: basic
+  - Data Lake
+difficulty: intermediate
 related:
-  - udp
-  - http
+  - data-warehouse
 ---
 ```
 
 - `title`: 必須。ページタイトル・サイドバー表示に使われます
 - `description`: 必須。メタ情報・一覧表示に使われます
-- `tags`: 任意。小文字・英数字・ハイフン推奨（例: `network`、`type-system`）
+- `tags`: 任意。小文字・英数字・ハイフン推奨（例: `data-engineering`、`data-lake`）
 - `aliases`: 任意。別名一覧
 - `difficulty`: 任意。`basic` / `intermediate` / `advanced` のいずれか
-- `related`: 任意。関連用語のスラッグ（`src/content/docs/glossary/` からの相対パス）
+- `related`: 任意。関連用語（同じカテゴリ内のファイル名から拡張子を除いたものを推奨）
 
 本文には Astro/Starlight のMDX記法が使えます。必要に応じて `## 概要`、`## 要点`、`## 具体例`、`## 関連用語`、`## 確認問題` などの見出しを使います。
 
 ### クイズ問題の追加（横断クイズ用）
 
-横断クイズに含めたい問題は `src/data/quizzes/` 以下にTypeScriptファイルとして追加します。
+横断クイズに含めたい問題は `src/data/quizzes/` 以下にTypeScriptファイルとして追加します。現在の構成:
 
-例: `src/data/quizzes/networking.ts`
+- `fundamentals.ts` （ETL/ELT、DWH）
+- `storage.ts` （データレイク、インデックス）
+- `processing.ts` （バッチ、ストリーム）
+
+例: `src/data/quizzes/storage.ts`
 
 ```ts
-import type { QuizQuestion } from "@types/quiz";
+import type { QuizQuestion } from "@/types/quiz";
 
-export const networkingQuestions = [
+export const storageQuestions = [
   {
-    id: "net-tcp-001", // ← 全体で一意
+    id: "de-data-lake-001", // ← 全体で一意
     type: "single-choice",
     prompt: "...",
     choices: ["A", "B", "C", "D"],
     answer: 0,
     explanation: "...",
-    tags: ["network", "tcp"],
-    difficulty: "basic",
+    tags: ["data-engineering", "data-lake"],
+    difficulty: "intermediate",
   },
 ] satisfies QuizQuestion[];
 ```
@@ -173,14 +202,21 @@ export const networkingQuestions = [
 集約は `src/data/quizzes/index.ts` で行います。
 
 ```ts
-import { networkingQuestions } from "./networking";
-export const allQuestions: QuizQuestion[] = [...networkingQuestions];
+import { fundamentalsQuestions } from "./fundamentals";
+import { storageQuestions } from "./storage";
+import { processingQuestions } from "./processing";
+
+export const allQuestions: QuizQuestion[] = [
+  ...fundamentalsQuestions,
+  ...storageQuestions,
+  ...processingQuestions,
+];
 ```
 
 #### 問題IDの付け方
 
 - 全体で一意にする
-- カテゴリプレフィックス＋連番を推奨（例: `net-tcp-001`、`db-index-001`）
+- カテゴリプレフィックス＋連番を推奨（例: `de-dwh-001`、`de-db-index-001`）
 - **問題IDを変更すると過去の進捗と紐付かなくなります**
 - `pnpm validate:questions` で重複を検出できます
 
@@ -193,7 +229,7 @@ import Quiz from "../../../../components/quiz/Quiz.svelte";
 
 <Quiz
   client:load
-  quizId="tcp-page"
+  quizId="etl-elt-page"
   questions={[ ... ]}
 />
 ```
@@ -209,7 +245,7 @@ import Quiz from "../../../../components/quiz/Quiz.svelte";
 
 ```ts
 export const flashcards: FlashCard[] = [
-  { id: "fc-tcp", front: "TCPとは？", back: "..." },
+  { id: "fc-etl-elt", front: "ETL と ELT の違いは？", back: "..." },
 ];
 ```
 
@@ -223,7 +259,7 @@ import FlashCards from "../../../../components/flashcards/FlashCards.svelte";
 
 ### タグ・難易度・関連用語
 
-- タグ: 小文字・英数字・ハイフンを推奨（例: `network`、`operating-system`）
+- タグ: 小文字・英数字・ハイフンを推奨（例: `data-engineering`、`etl`）
 - 難易度: `basic` / `intermediate` / `advanced` の3段階固定
   - 画面表示は `基礎` / `中級` / `上級` に自動変換されます
 - 関連用語: frontmatter の `related` にスラッグを書くか、本文で直接 `[テキスト](../other/)` のようにリンクします
@@ -256,15 +292,19 @@ import FlashCards from "../../../../components/flashcards/FlashCards.svelte";
 
 ## GitHub Pages設定
 
-1. GitHubリポジトリ `https://github.com/kf3225/de-glossary` を開く
+本リポジトリでは、すでに GitHub Pages が **Source = GitHub Actions** として有効化済みです。
+`main` ブランチへpushすると、自動的にビルド・デプロイが走り、次のURLで公開されます。
+
+> **https://kf3225.github.io/de-glossary/**
+
+新しいリポジトリで同様に設定したい場合は、次の手順を実施します:
+
+1. GitHubリポジトリを開く
 2. `Settings` → `Pages`
 3. `Build and deployment` → `Source` を **`GitHub Actions`** に設定
+   - または `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow` を実行
 4. `main` ブランチへpushする（またはPRをマージする）
 5. リポジトリの `Actions` タブで `Deploy` ワークフローを確認
-6. 完了後、次のURLで公開される:
-   ```text
-   https://kf3225.github.io/de-glossary/
-   ```
 
 > GitHub UIの名称は変更される可能性があります。実行時点の公式ドキュメントと画面を確認してください。
 
@@ -290,7 +330,8 @@ import FlashCards from "../../../../components/flashcards/FlashCards.svelte";
 ```js
 const githubUser = "kf3225";
 const repositoryName = "de-glossary";
-const isUserSite = repositoryName === `${githubUser}.github.io`;
+const isUserSite =
+  String(repositoryName) === `${githubUser}.github.io`;
 
 export default defineConfig({
   site: `https://${githubUser}.github.io`,
@@ -328,6 +369,7 @@ base:    設定しない（undefined）
 ### 他のアカウントへフォークした場合
 
 `astro.config.mjs` の `githubUser` と `repositoryName` を書き換えてください。
+GitHub Pages の Source も新リポジトリで再度 `GitHub Actions` に設定する必要があります。
 
 ## GitHub Actions
 
@@ -358,7 +400,7 @@ base:    設定しない（undefined）
 - `deploy`: `build` に依存。GitHub Pages Environmentで `dist` を公開
 
 **権限**（ジョブごと）:
-- `build`: `contents: read`
+- `build`: `contents: read`、`pages: write`、`id-token: write`
 - `deploy`: `pages: write`、`id-token: write`
 
 **並行制御**: GitHub Pagesのデプロイ競合を防ぐため `pages` グループで直列化
@@ -411,11 +453,12 @@ CI/CDでは `pnpm install --frozen-lockfile` を使います。
 ### GitHub PagesのSourceがGitHub Actionsになっていない
 
 - リポジトリの `Settings` → `Pages` → `Build and deployment` → `Source` を `GitHub Actions` に変更してください
+- または `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow` を実行
 
 ### Actionsの権限不足
 
 - `Settings` → `Actions` → `General` → `Workflow permissions` で「Read and write permissions」ではなく、ワークフロー内の `permissions` を使う運用を推奨します
-- `deploy.yml` の `deploy` ジョブで `pages: write` と `id-token: write` を明示しています
+- `deploy.yml` で `pages: write` と `id-token: write` を明示しています
 
 ### `pnpm-lock.yaml` がない
 
